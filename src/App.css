@@ -36,3 +36,113 @@
     transform: rotate(360deg);
   }
 }
+
+/* Контейнер для карточек */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Расстояние между карточками */
+  justify-content: center; /* Центрирование карточек */
+  padding: 20px;
+}
+
+/* Стили для текста */
+.car-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.car-card p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.add-car-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.add-car-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Стили для списка автомобилей */
+.car-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Карточка автомобиля */
+.car-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.car-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.car-image-container {
+  overflow: hidden;
+}
+
+.car-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.car-card:hover .car-image {
+  transform: scale(1.05);
+}
+
+.car-info {
+  padding: 16px;
+}
+
+.car-info h3 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.car-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+  .car-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .car-image-container {
+    height: 160px;
+  }
+}

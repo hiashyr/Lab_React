@@ -1,64 +1,42 @@
-// src/redux/carsSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
 
-// Асинхронные Thunk-actions
-export const fetchCars = createAsyncThunk(
-  'cars/fetchCars',
-  async ({ currentPage, carsPerPage }) => {
-    const countRes = await axios.get('http://localhost:8080/list/all');
-    const carsRes = await axios.get(
-      `http://localhost:8080/list/lim?offset=${(currentPage - 1) * carsPerPage}&limit=${carsPerPage}`
-    );
-    return { cars: carsRes.data.list, totalCars: countRes.data.count };
-  }
-);
+const initialState = {
+  cars: [],
+  loading: false,
+  error: null,
+  totalCars: 0
+};
 
-export const addCar = createAsyncThunk(
-  'cars/addCar',
-  async (carData) => {
-    const formData = new FormData();
-    formData.append('image', carData.image);
-    const uploadRes = await axios.post('http://localhost:8080/upload', formData);
-    await axios.post('http://localhost:8080/list/add', {
-      name: carData.name,
-      description: carData.description,
-      image_url: uploadRes.data.imageUrl,
-    });
-    return carData;
-  }
-);
-
-// Создание среза
 const carsSlice = createSlice({
   name: 'cars',
-  initialState: {
-    cars: [],
-    loading: false,
-    error: null,
-    totalCars: 0,
+  initialState,
+  reducers: {
+    resetError: (state) => {
+      state.error = null;
+    }
   },
-  reducers: {}, // Синхронные редьюсеры (если нужны)
   extraReducers: (builder) => {
+    // Обработка экшенов из саг
     builder
-      // Обработка fetchCars
-      .addCase(fetchCars.pending, (state) => {
+      .addCase('FETCH_CARS_REQUEST', (state) => {
         state.loading = true;
+        state.error = null;
       })
-      .addCase(fetchCars.fulfilled, (state, action) => {
+      .addCase('FETCH_CARS_SUCCESS', (state, action) => {
+        state.loading = false;
         state.cars = action.payload.cars;
-        state.totalCars = action.payload.totalCars;
-        state.loading = false;
+        state.totalCars = action.payload.totalCount;
       })
-      .addCase(fetchCars.rejected, (state, action) => {
-        state.error = action.error.message;
+      .addCase('FETCH_CARS_FAILURE', (state, action) => {
         state.loading = false;
+        state.error = action.payload;
       })
-      // Обработка addCar
-      .addCase(addCar.fulfilled, (state, action) => {
-        state.cars.unshift(action.payload); // Добавляем новую машину в начало массива
+      .addCase('ADD_CAR_SUCCESS', (state, action) => {
+        state.cars.unshift(action.payload);
+        state.totalCars += 1;
       });
-  },
+  }
 });
 
+export const { resetError } = carsSlice.actions;
 export default carsSlice.reducer;

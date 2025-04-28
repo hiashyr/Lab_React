@@ -1,10 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit';
-import carsReducer from './carsSlice'; // Импорт нашего среза (заменит редьюсер)
+import { createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import rootReducer from './reducers/rootReducer';
+import rootSaga from './sagas/rootSaga';
 
-export const store = configureStore({
-  reducer: {
-    cars: carsReducer, // Ключ 'cars' будет использоваться в useSelector
-  },
-});
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+  rootReducer,
+  applyMiddleware(sagaMiddleware)
+);
+
+sagaMiddleware.run(rootSaga);
 
 export default store;
